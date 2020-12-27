@@ -2,7 +2,10 @@ window.onload = () => {
   console.log('[Cauê Santos] - Flappy Bird');
 
   const sprites = new Image();
-  sprites.src = './sprites.png';
+  sprites.src = './assets/img/sprites.png';
+
+  const hitSound = new Audio();
+  hitSound.src = './assets/sounds/hit.wav';
 
   const canvas = document.querySelector('canvas');
   const context = canvas.getContext('2d');
@@ -23,8 +26,12 @@ window.onload = () => {
       },
       reload() {
         if (collision(flappyBird, floor)) {
-          changeScreen(screens.home);
-  
+          hitSound.play();
+
+          setTimeout(() => {
+            changeScreen(screens.home);
+          }, 500);
+
           return;
         }
   

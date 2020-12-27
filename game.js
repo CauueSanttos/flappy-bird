@@ -70,15 +70,61 @@ window.onload = () => {
     }
   }
 
-  function drawGame() {
-    flappyBird.reload();
+  const homeScreen = {
+    spriteX: 134,
+    spriteY: 0,
+    width: 174,
+    height: 152,
+    x: (canvas.width / 2) - (174 / 2),
+    y: 50,
+    draw() {
+      drawContext(homeScreen);
+    }
+  }
 
-    background.draw();
-    floor.draw();
-    flappyBird.draw();
- 
+  let activeScreen = {};
+  function changeScreen(newScreen) {
+    activeScreen = newScreen;
+  }
+
+  const screens = {
+    game: {
+      draw() {
+        background.draw();
+        floor.draw();
+        flappyBird.draw();
+      },
+      reload() {
+        flappyBird.reload();
+      },
+    },
+    home: {
+      draw() {
+        screens.game.draw();
+        homeScreen.draw();
+      },
+      reload() {
+
+      },
+      click() {
+        changeScreen(screens.game);
+      }
+    },
+  };
+
+  function drawGame() {
+    activeScreen.reload();
+    activeScreen.draw();
+
     requestAnimationFrame(drawGame);
   }
 
+  this.addEventListener('click', () => {
+    if (activeScreen.click) {
+      activeScreen.click();
+    }
+  });
+
+  changeScreen(screens.home);
   drawGame();
 }

@@ -7,6 +7,38 @@ window.onload = () => {
   const canvas = document.querySelector('canvas');
   const context = canvas.getContext('2d');
 
+  function createFlappyBird() {
+    const flappyBird = {
+      spriteX: 0,
+      spriteY: 0,
+      width: 33,
+      height: 24,
+      x: 10,
+      y: 50,
+      speed: 0,
+      gravity: 0.25,
+      jump: 4.6,
+      toJump() {
+        flappyBird.speed =- flappyBird.jump;
+      },
+      reload() {
+        if (collision(flappyBird, floor)) {
+          changeScreen(screens.home);
+  
+          return;
+        }
+  
+        flappyBird.speed +=  flappyBird.gravity;
+        flappyBird.y += flappyBird.speed;
+      },
+      draw() {
+        drawContext(flappyBird);
+      }
+    }
+
+    return flappyBird;
+  }
+
   function drawContext(itemToDraw, recreateImageX = false) {
     let { x, width } = itemToDraw;
 
@@ -21,6 +53,17 @@ window.onload = () => {
       x, itemToDraw.y,
       itemToDraw.width, itemToDraw.height
     );
+  }
+
+  function collision(itemToCollison, collisionToItem) {
+    const itemToCollisonY = itemToCollison.y + itemToCollison.height;
+    const collisionToItemY = collisionToItem.y;
+
+    if (itemToCollisonY >= collisionToItemY) {
+      return true;
+    }
+
+    return false;
   }
 
   const background = {
@@ -52,24 +95,6 @@ window.onload = () => {
     }
   }
 
-  const flappyBird = {
-    spriteX: 0,
-    spriteY: 0,
-    width: 33,
-    height: 24,
-    x: 10,
-    y: 50,
-    speed: 0,
-    gravity: 0.25,
-    reload() {
-      flappyBird.speed +=  flappyBird.gravity;
-      flappyBird.y += flappyBird.speed;
-    },
-    draw() {
-      drawContext(flappyBird);
-    }
-  }
-
   const homeScreen = {
     spriteX: 134,
     spriteY: 0,
@@ -82,24 +107,37 @@ window.onload = () => {
     }
   }
 
+  const globals = {};
+
   let activeScreen = {};
   function changeScreen(newScreen) {
     activeScreen = newScreen;
+
+    if (activeScreen.init) {
+      activeScreen.init();
+    }
   }
 
   const screens = {
     game: {
+      init() {
+        globals.flappyBird = createFlappyBird();
+      },
       draw() {
         background.draw();
         floor.draw();
-        flappyBird.draw();
+        globals.flappyBird.draw();
       },
       reload() {
-        flappyBird.reload();
+        globals.flappyBird.reload();
       },
+      click() {
+        globals.flappyBird.toJump();
+      }
     },
     home: {
       draw() {
+        screens.game.init();
         screens.game.draw();
         homeScreen.draw();
       },

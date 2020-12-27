@@ -82,7 +82,7 @@ window.onload = () => {
         flappyBird.speed =- flappyBird.jump;
       },
       reload() {
-        if (collision(flappyBird, floor)) {
+        if (collision(flappyBird, globals.floor)) {
           hitSound.play();
 
           setTimeout(() => {
@@ -101,6 +101,33 @@ window.onload = () => {
     }
 
     return flappyBird;
+  }
+
+  /**
+   * Create and return new floor object
+   */
+  function createFloor() {
+    const floor = {
+      spriteX: 0,
+      spriteY: 610,
+      width: 224,
+      height: 112,
+      x: 0,
+      y: canvas.height - 112,
+      reload() {
+        const floorMoviment = 1;
+        const repeat = floor.width / 2;
+        const moviment = floor.x - floorMoviment;
+
+        floor.x = moviment % repeat;
+      },
+      draw() {
+        drawContext(floor);
+        drawContext(floor, true);
+      }
+    }
+
+    return floor;
   }
 
   /**
@@ -146,13 +173,28 @@ window.onload = () => {
    * Game screens
    */
   const screens = {
-    game: {
+    home: {
       init() {
         globals.flappyBird = createFlappyBird();
+        globals.floor = createFloor();
       },
       draw() {
         background.draw();
-        floor.draw();
+        globals.floor.draw();
+        globals.flappyBird.draw();        
+        homeScreen.draw();
+      },
+      reload() {
+        globals.floor.reload();
+      },
+      click() {
+        changeScreen(screens.game);
+      }
+    },
+    game: {
+      draw() {
+        background.draw();
+        globals.floor.draw();
         globals.flappyBird.draw();
       },
       reload() {
@@ -160,17 +202,6 @@ window.onload = () => {
       },
       click() {
         globals.flappyBird.toJump();
-      }
-    },
-    home: {
-      draw() {
-        screens.game.init();
-        screens.game.draw();
-        homeScreen.draw();
-      },
-      reload() {},
-      click() {
-        changeScreen(screens.game);
       }
     },
   };
@@ -209,22 +240,7 @@ window.onload = () => {
     }
   }
 
-  /**
-   * Game floor
-   */
-  const floor = {
-    spriteX: 0,
-    spriteY: 610,
-    width: 224,
-    height: 112,
-    x: 0,
-    y: canvas.height - 112,
-    draw() {
-      drawContext(floor);
-      drawContext(floor, true);
-    }
-  }
-
+  // debugger;
   changeScreen(screens.home);
   drawGame();
 }

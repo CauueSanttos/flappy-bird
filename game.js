@@ -23,31 +23,6 @@ window.onload = () => {
     );
   }
 
-  const flappyBird = {
-    spriteX: 0,
-    spriteY: 0,
-    width: 33,
-    height: 24,
-    x: 10,
-    y: 50,
-    draw() {
-      drawContext(flappyBird);
-    }
-  }
-
-  const floor = {
-    spriteX: 0,
-    spriteY: 610,
-    width: 224,
-    height: 112,
-    x: 0,
-    y: canvas.height - 112,
-    draw() {
-      drawContext(floor);
-      drawContext(floor, true);
-    }
-  }
-
   const background = {
     spriteX: 390,
     spriteY: 0,
@@ -64,7 +39,40 @@ window.onload = () => {
     }
   }
 
+  const floor = {
+    spriteX: 0,
+    spriteY: 610,
+    width: 224,
+    height: 112,
+    x: 0,
+    y: canvas.height - 112,
+    draw() {
+      drawContext(floor);
+      drawContext(floor, true);
+    }
+  }
+
+  const flappyBird = {
+    spriteX: 0,
+    spriteY: 0,
+    width: 33,
+    height: 24,
+    x: 10,
+    y: 50,
+    speed: 0,
+    gravity: 0.25,
+    reload() {
+      flappyBird.speed +=  flappyBird.gravity;
+      flappyBird.y += flappyBird.speed;
+    },
+    draw() {
+      drawContext(flappyBird);
+    }
+  }
+
   function drawGame() {
+    flappyBird.reload();
+
     background.draw();
     floor.draw();
     flappyBird.draw();

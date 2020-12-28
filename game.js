@@ -33,6 +33,11 @@ window.onload = () => {
   let activeScreen = {};
 
   /**
+   * Frames canvas
+   */
+  let frames = 0;
+
+  /**
    * Active click event in screen
    */
   this.addEventListener('click', () => {
@@ -61,6 +66,8 @@ window.onload = () => {
     activeScreen.reload();
     activeScreen.draw();
 
+    frames += 1;
+
     requestAnimationFrame(drawGame);
   }
 
@@ -78,6 +85,12 @@ window.onload = () => {
       speed: 0,
       gravity: 0.25,
       jump: 4.6,
+      frame: 0,
+      moviments: [
+        { spriteX: 0, spriteY: 0 },
+        { spriteX: 0, spriteY: 26 },
+        { spriteX: 0, spriteY: 52 },
+      ],
       toJump() {
         flappyBird.speed =- flappyBird.jump;
       },
@@ -95,8 +108,24 @@ window.onload = () => {
         flappyBird.speed +=  flappyBird.gravity;
         flappyBird.y += flappyBird.speed;
       },
+      refreshFrames() {
+        const frameInterval = 10;
+        const oldInterval = frames % frameInterval === 0;
+
+        if (oldInterval) {
+          const incrementBase = 1;
+          const increment = incrementBase + flappyBird.frame;
+          const repeatBase = flappyBird.moviments.length;
+
+          flappyBird.frame = increment % repeatBase;
+        }
+      },
       draw() {
-        drawContext(flappyBird);
+        flappyBird.refreshFrames();
+
+        const { spriteX, spriteY } = flappyBird.moviments[flappyBird.frame];
+
+        drawContext({ ...flappyBird, spriteX, spriteY });
       }
     }
 
@@ -240,7 +269,6 @@ window.onload = () => {
     }
   }
 
-  // debugger;
   changeScreen(screens.home);
   drawGame();
 }

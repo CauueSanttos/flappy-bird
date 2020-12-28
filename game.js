@@ -418,8 +418,27 @@ window.onload = () => {
     height: 200,
     x: (canvas.width / 2) - (226 / 2),
     y: 50,
+    scoreFunction() {
+      const score = globals.scoreBoard.score;
+
+      context.font = '15px "Press Start 2P"';
+      context.fillStyle = '#000';
+      context.fillText(score,  canvas.width - 80, 142);
+
+      const bestScore = localStorage.getItem('@flappybird/bestScore');
+      if (bestScore && (score > bestScore)) {
+        localStorage.setItem('@flappybird/bestScore', score);
+      }
+
+      if (bestScore) {
+        context.font = '15px "Press Start 2P"';
+        context.fillStyle = '#000';
+        context.fillText(bestScore,  canvas.width - 78, 185);
+      }
+    },
     draw() {
       drawContext(gameOverScreen);
+      gameOverScreen.scoreFunction();
     }
   };
 

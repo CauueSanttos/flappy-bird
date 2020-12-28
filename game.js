@@ -58,6 +58,19 @@ window.onload = () => {
       activeScreen.init();
     }
   }
+  
+  /**
+   * Change to home sceen and play the hit sound
+   * 
+   * @param {*} screen 
+   */
+  function youLose(screen) {
+    hitSound.play();
+
+    setTimeout(() => {
+      changeScreen(screen);
+    }, 500);
+  }
 
   /**
    * Draw active screen in canvas
@@ -96,11 +109,7 @@ window.onload = () => {
       },
       reload() {
         if (collision(flappyBird, globals.floor)) {
-          hitSound.play();
-
-          setTimeout(() => {
-            changeScreen(screens.home);
-          }, 500);
+          youLose(screens.home);
 
           return;
         }
@@ -207,7 +216,7 @@ window.onload = () => {
 
           if (pipe.flappyBirdCollision(pair)) {
             console.log('You lose!');
-            changeScreen(screens.home);
+            youLose(screens.home);
           }
 
           if (pair.x + pipe.width <= 0) {

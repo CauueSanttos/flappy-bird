@@ -176,6 +176,22 @@ window.onload = () => {
       },
       space: 80,
       pairs: [],
+      flappyBirdCollision(pair) {
+        const flappyHead = globals.flappyBird.y;
+        const flappyBase = globals.flappyBird.y + globals.flappyBird.height;
+
+        if (globals.flappyBird.x >= pair.x) {
+          if (flappyHead <= pair.skyPipe.y) {
+            return true;
+          }
+
+          if (flappyBase >= pair.floorPipe.y) {
+            return true;
+          }
+        }
+
+        return false;
+      },
       reload() {
         const old100Frames = frames % 100 === 0;
 
@@ -188,6 +204,11 @@ window.onload = () => {
 
         pipe.pairs.forEach(pair => {
           pair.x -= 2;
+
+          if (pipe.flappyBirdCollision(pair)) {
+            console.log('You lose!');
+            changeScreen(screens.home);
+          }
 
           if (pair.x + pipe.width <= 0) {
             pipe.pairs.shift();
@@ -220,6 +241,15 @@ window.onload = () => {
             x: floorPipeX,
             y: floorPipeY,
           });
+
+          pair.skyPipe = {
+            x: skyPipeX,
+            y: pipe.height + skyPipeY,
+          };
+          pair.floorPipe = {
+            x: floorPipeX,
+            y: floorPipeY,
+          };
         });
       }
     }
@@ -278,14 +308,12 @@ window.onload = () => {
       },
       draw() {
         background.draw();
-        globals.pipe.draw();
         globals.floor.draw();
         globals.flappyBird.draw();        
-        // homeScreen.draw();
+        homeScreen.draw();
       },
       reload() {
         globals.floor.reload();
-        globals.pipe.reload();
       },
       click() {
         changeScreen(screens.game);
@@ -294,10 +322,13 @@ window.onload = () => {
     game: {
       draw() {
         background.draw();
+        globals.pipe.draw();
         globals.floor.draw();
         globals.flappyBird.draw();
       },
       reload() {
+        globals.pipe.reload();
+        globals.floor.reload();
         globals.flappyBird.reload();
       },
       click() {

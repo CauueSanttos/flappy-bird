@@ -40,7 +40,7 @@ window.onload = () => {
   /**
    * Active click event in screen
    */
-  this.addEventListener('click', () => {
+  canvas.addEventListener('click', () => {
     if (activeScreen.click) {
       activeScreen.click();
     }

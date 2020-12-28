@@ -67,9 +67,7 @@ window.onload = () => {
   function youLose(screen) {
     hitSound.play();
 
-    setTimeout(() => {
-      changeScreen(screen);
-    }, 500);
+    changeScreen(screens.gameOver);
   }
 
   /**
@@ -189,7 +187,7 @@ window.onload = () => {
         const flappyHead = globals.flappyBird.y;
         const flappyBase = globals.flappyBird.y + globals.flappyBird.height;
 
-        if (globals.flappyBird.x >= pair.x) {
+        if ((globals.flappyBird.x + globals.flappyBird.width - 5) >= pair.x) {
           if (flappyHead <= pair.skyPipe.y) {
             return true;
           }
@@ -374,6 +372,17 @@ window.onload = () => {
         globals.flappyBird.toJump();
       }
     },
+    gameOver: {
+      draw() {
+        gameOverScreen.draw();
+      },
+      reload() {
+
+      },
+      click() {
+        changeScreen(screens.home);
+      }
+    }
   };
 
   /**
@@ -389,7 +398,19 @@ window.onload = () => {
     draw() {
       drawContext(homeScreen);
     }
-  }
+  };
+
+  const gameOverScreen = {
+    spriteX: 134,
+    spriteY: 153,
+    width: 226,
+    height: 200,
+    x: (canvas.width / 2) - (226 / 2),
+    y: 50,
+    draw() {
+      drawContext(gameOverScreen);
+    }
+  };
 
   /**
    * Game background

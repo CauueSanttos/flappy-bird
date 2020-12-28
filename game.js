@@ -47,6 +47,17 @@ window.onload = () => {
   });
 
   /**
+   * Press space key to click
+   */
+  document.addEventListener('keypress', (event) => {
+    if (event.keyCode === 32) {
+      if (activeScreen.click) {
+        activeScreen.click();
+      }
+    }
+  })
+
+  /**
    * Change active screen and initialize
    * 
    * @param {*} newScreen 

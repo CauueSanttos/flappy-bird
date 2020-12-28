@@ -160,6 +160,74 @@ window.onload = () => {
   }
 
   /**
+   * Create and return new pipe object
+   */
+  function createPipe() {
+    const pipe = {
+      width: 52,
+      height: 400,
+      floor: {
+        spriteX: 0,
+        spriteY: 169,
+      },
+      sky: {
+        spriteX: 52,
+        spriteY: 169,
+      },
+      space: 80,
+      pairs: [],
+      reload() {
+        const old100Frames = frames % 100 === 0;
+
+        if (old100Frames) {
+          pipe.pairs.push({
+            x: canvas.width,
+            y: -150 * (Math.random() + 1),
+          });
+        }
+
+        pipe.pairs.forEach(pair => {
+          pair.x -= 2;
+
+          if (pair.x + pipe.width <= 0) {
+            pipe.pairs.shift();
+          }
+        });
+      },
+      draw() {
+        pipe.pairs.forEach(pair => {
+          const randonY = pair.y;
+          const spacePice = 90;
+
+          const skyPipeX = pair.x;
+          const skyPipeY = randonY;
+
+          drawContext({
+            ...pipe,
+            spriteX: pipe.sky.spriteX,
+            spriteY: pipe.sky.spriteY,
+            x: skyPipeX,
+            y: skyPipeY,
+          });
+
+          const floorPipeX = pair.x;
+          const floorPipeY = pipe.height + spacePice + randonY;
+
+          drawContext({
+            ...pipe,
+            spriteX: pipe.floor.spriteX,
+            spriteY: pipe.floor.spriteY,
+            x: floorPipeX,
+            y: floorPipeY,
+          });
+        });
+      }
+    }
+
+    return pipe;
+  }
+
+  /**
    * Detect collision in itens
    * 
    * @param {*} itemToCollison 
@@ -206,15 +274,18 @@ window.onload = () => {
       init() {
         globals.flappyBird = createFlappyBird();
         globals.floor = createFloor();
+        globals.pipe = createPipe();
       },
       draw() {
         background.draw();
+        globals.pipe.draw();
         globals.floor.draw();
         globals.flappyBird.draw();        
-        homeScreen.draw();
+        // homeScreen.draw();
       },
       reload() {
         globals.floor.reload();
+        globals.pipe.reload();
       },
       click() {
         changeScreen(screens.game);

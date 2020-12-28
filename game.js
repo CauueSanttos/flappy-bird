@@ -267,6 +267,31 @@ window.onload = () => {
   }
 
   /**
+   * Create and return new scoreboard object
+   */
+  function createScoreBoard() {
+    const scoreBoard = {
+      score: 0,
+      reload() {
+        const frameInterval = 100;
+        const oldInterval = frames % frameInterval === 0;
+
+        if (oldInterval) {
+          scoreBoard.score += 1;
+        }
+      },
+      draw() {
+        context.font = '35px "Press Start 2P"';
+        context.textAlign = 'right';
+        context.fillStyle = '#FFF';
+        context.fillText(`${scoreBoard.score}`,  canvas.width - 10, 45);
+      },
+    };
+
+    return scoreBoard;
+  }
+
+  /**
    * Detect collision in itens
    * 
    * @param {*} itemToCollison 
@@ -329,16 +354,21 @@ window.onload = () => {
       }
     },
     game: {
+      init() {
+        globals.scoreBoard = createScoreBoard();
+      },
       draw() {
         background.draw();
         globals.pipe.draw();
         globals.floor.draw();
         globals.flappyBird.draw();
+        globals.scoreBoard.draw();
       },
       reload() {
         globals.pipe.reload();
         globals.floor.reload();
         globals.flappyBird.reload();
+        globals.scoreBoard.reload();
       },
       click() {
         globals.flappyBird.toJump();

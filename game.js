@@ -418,7 +418,20 @@ window.onload = () => {
     height: 200,
     x: (canvas.width / 2) - (226 / 2),
     y: 50,
-    scoreFunction() {
+    scoreMedal() {
+      const score = globals.scoreBoard.score;
+
+      if (score <= 10) {
+        drawContext(medals.bronze);
+      } else if (score > 10 && score <= 20) {
+        drawContext(medals.silver);
+      } else if (score > 20 && score <= 30) {
+        drawContext(medals.gold);
+      } else if (score > 30) {
+        drawContext(medals.platinum);
+      }
+    },
+    scoreBestScore() {
       let bestScore;
       const score = globals.scoreBoard.score;
 
@@ -441,7 +454,8 @@ window.onload = () => {
     },
     draw() {
       drawContext(gameOverScreen);
-      gameOverScreen.scoreFunction();
+      gameOverScreen.scoreBestScore();
+      gameOverScreen.scoreMedal();
     }
   };
 
@@ -463,6 +477,44 @@ window.onload = () => {
       drawContext(background, true);
     }
   }
+
+  /**
+   * Game medals
+   */
+  const medals = {
+    bronze: {
+      spriteX: 47,
+      spriteY: 122,
+      width: 47,
+      height: 47,
+      x: 70,
+      y: 135,
+    },
+    silver: {
+      spriteX: 47,
+      spriteY: 78,
+      width: 45,
+      height: 45,
+      x: 70,
+      y: 135,
+    },
+    gold: {
+      spriteX: 0,
+      spriteY: 122,
+      width: 47,
+      height: 47,
+      x: 70,
+      y: 135,
+    },
+    platinum: {
+      spriteX: 0,
+      spriteY: 78,
+      width: 45,
+      height: 45,
+      x: 70,
+      y: 135,
+    }
+  };
 
   changeScreen(screens.home);
   drawGame();
